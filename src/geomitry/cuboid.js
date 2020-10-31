@@ -22,14 +22,14 @@ class Cuboid extends GLObject
         // Half depth
         let hd = d[2]/2;
 
-        v.push(new Vertex([-hw, -hh, +hd], 0));
-        v.push(new Vertex([+hw, -hh, +hd], 1));
-        v.push(new Vertex([+hw, -hh, -hd], 2));
-        v.push(new Vertex([-hw, -hh, -hd], 3));
-        v.push(new Vertex([-hw, +hh, +hd], 4));
-        v.push(new Vertex([+hw, +hh, +hd], 5));
-        v.push(new Vertex([+hw, +hh, -hd], 6));
-        v.push(new Vertex([-hw, +hh, -hd], 7));
+        v.push(new Vertex(new Vector3(-hw, -hh, +hd), 0));
+        v.push(new Vertex(new Vector3(+hw, -hh, +hd), 1));
+        v.push(new Vertex(new Vector3(+hw, -hh, -hd), 2));
+        v.push(new Vertex(new Vector3(-hw, -hh, -hd), 3));
+        v.push(new Vertex(new Vector3(-hw, +hh, +hd), 4));
+        v.push(new Vertex(new Vector3(+hw, +hh, +hd), 5));
+        v.push(new Vertex(new Vector3(+hw, +hh, -hd), 6));
+        v.push(new Vertex(new Vector3(-hw, +hh, -hd), 7));
 
         let triangulation = Triangulation.createEmpty();
         triangulation.combine(Triangulation.triangulateFour([v[0], v[1], v[2], v[3]]));
@@ -40,6 +40,7 @@ class Cuboid extends GLObject
         triangulation.combine(Triangulation.triangulateFour([v[4], v[7], v[6], v[5]]));
 
         let result = new Cuboid(p, [0, 0, 0], [1,1,1], v, triangulation.faces, triangulation.lines);
+        result.removeDoubleLines();
         result.setFaceColor(faceColor);
         result.setWireframeColor(lineColor);
         return result;

@@ -31,8 +31,8 @@ class Camera
     get viewMatrix()
     {
         let matrix = Matrix.createUnitMatrix(4);
-        matrix = matrix.multiply(Matrix.createTranslationMatrix(this.position));
         //console.log(matrix);
+        matrix = matrix.multiply(Matrix.createTranslationMatrix(this.position));
         matrix = matrix.multiply(Matrix.createRotationMatrixXYZ(this.rotation));
         //console.log(matrix);
         matrix = matrix.inverse();
@@ -40,19 +40,22 @@ class Camera
         return matrix;
     }
 
-    rotateAroundCenterY(angle, distance)
+    rotateAroundCenter(rotation, distance)
     {
-        assert(typeof angle === "number" &&typeof distance === "number", 
-            [angle, distance], 
+        assert(typeof rotation[0] === "number" &&typeof distance === "number", 
+            [rotation, distance], 
             "Invalid distance or angle")
 
         
-        this.rotation = [0, angle, 0];
+        /*this.rotation = [0, angle, 0];
         let matrix = Matrix.createUnitMatrix(4);
-        matrix = matrix.multiply(Matrix.createTranslationMatrix([0,0,distance]));
+        //matrix = matrix.multiply(Matrix.createTranslationMatrix([0,0,distance]));
         matrix = matrix.multiply(Matrix.createRotationMatrix(angle, 1, 4));
-        let newPos = matrix.multiply(new Matrix([1, 1, 1, 1], 1, 4)).elements;
-        //console.log(newPos);
-        this.position = [newPos[0],newPos[1],newPos[2]];
+        let newPos = matrix.multiply(new Matrix([0, 0, distance, 0], 1, 4)).elements;
+        console.log(newPos);
+        this.position = [newPos[0],newPos[1],newPos[2]];*/
+
+        this.rotation = rotation;
+        this.position = [0, 0, distance];
     }
 }

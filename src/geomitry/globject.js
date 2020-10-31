@@ -4,6 +4,10 @@ class GLObject
 {
     constructor(localPosition, localRotation, localScale, vertices, faces, wireframe)
     {
+        assert(localPosition.elements.length === 3,
+            [localPosition, localRotation, localScale, vertices, faces, wireframe],
+            "Invalid arguments")
+
         this.localPosition = localPosition;
         this.localRotation = localRotation;
         this.localScale = localScale;
@@ -20,9 +24,9 @@ class GLObject
         for(let i = 0; i < this.vertices.length; i++)
         {
             let vP = this.vertices[i].localPosition;
-            result.push(vP[0]);
-            result.push(vP[1]);
-            result.push(vP[2]);
+            result.push(vP.x);
+            result.push(vP.y);
+            result.push(vP.z);
         }
         //console.log(result);
         return result;
@@ -30,7 +34,7 @@ class GLObject
 
     get translationMatrix()
     {
-        return Matrix.createTranslationMatrix(this.localPosition);
+        return Matrix.createTranslationMatrix(this.localPosition.elements);
     }
 
     get rotationMatrixX()
@@ -119,5 +123,24 @@ class GLObject
             colors.push(color);
         }
         return colors;
+    }
+
+    removeDoubleLines()
+    {
+        let lines = [];
+        let iDs = [];
+        this.wireframe.forEach(line => {
+            let iD = [line.vertices[0].index, line.vertices[1].index];
+            let reverseID = [line.vertices[1].index, line.vertices[0].index];
+            let containsIDs = iDs.some(o => o[0] === iD[0] && o[1] === iD[1] || o[0] === reverseID[0] && o[1] === reverseID[1]);
+            if(!containsIDs)
+            {
+                lines.push(line);
+                iDs.push(iD);
+                iDs.push(reverseID);
+            }
+        });
+        this.wireframe = lines;
+        //console.log(this.wireframe.length);
     }
 }

@@ -135,9 +135,14 @@ class Renderer
     draw(glObject, camera)
     {
         //console.log(camera);
-        let matrix = this.createPerspectiveProjectionMatrix(camera);
-        matrix = camera.viewMatrix.multiply(matrix);
-        matrix = glObject.transformationMatrix().multiply(matrix);
+        let transformationMatrix = glObject.transformationMatrix();
+        let projectionMatrix = this.createPerspectiveProjectionMatrix(camera);
+        let viewMatrix = camera.viewMatrix;
+
+
+        let matrix = transformationMatrix;
+        matrix = matrix.multiply(viewMatrix);
+        matrix = matrix.multiply(projectionMatrix);
         this.gl.uniformMatrix4fv(this.glMatrixLocation, false, matrix.elements);
         this.bindVertices(glObject);
 

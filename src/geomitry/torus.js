@@ -38,7 +38,7 @@ class Torus extends GLObject
                     let y = (R + r * Math.cos(u)) * Math.sin(v);
                     let z = r * Math.sin(u);
                     
-                    vertices.push(new Vertex([x,y,z], index));
+                    vertices.push(new Vertex(new Vector3(x,y,z), index));
                 }
 
                 if(i > 0 && j > 0)
@@ -53,6 +53,7 @@ class Torus extends GLObject
         }
 
         let result = new Torus(p, [0, 0, 0], [1,1,1], vertices, triangulation.faces, triangulation.lines);
+        result.removeDoubleLines();
         result.setFaceColor(faceColor);
         result.setWireframeColor(lineColor);
         return result;

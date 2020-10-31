@@ -7,7 +7,7 @@ function assert(condition, involvedObjects, message)
     else
     {
         console.table(involvedObjects);
-        throw new Error('message');
+        throw new Error(message);
     }
 }
 
