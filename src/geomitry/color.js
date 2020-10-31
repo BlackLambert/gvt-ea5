@@ -43,4 +43,14 @@ class Color
         b = b / max;
         return new Color(r,g,b,1.0);
     }
+
+    lerp(other, value)
+    {
+        value = clamp(value, 0, 1);
+        let dr = (other.r - this.r) * value;
+        let dg = (other.g - this.g) * value;
+        let db = (other.b - this.b) * value;
+        let da = (other.a - this.a) * value;
+        return new Color(this.r + dr, this.g + dg, this.b + db, this.a + da);
+    }
 }

@@ -30,7 +30,7 @@ function createScene()
     const cuboidDimensions = [200, 100, 150];
     const cuboidPosition = new Vector3(0, -100, -50);
     const cuboidRotation = [30, 45, 125];
-    const cuboidColor = new Color(0.2,0.2,0.7,1.0);
+    const cuboidColor = new Color(0.7,0.7,0.2,1.0);
     const cuboidLineColor = Color.black();
 
     const torusInnerRadius = 75;
@@ -53,7 +53,7 @@ function createScene()
     let torus = Torus.createBasic(torusInnerRadius, torusOuterRadius, torusResolution, torusPosition, torusLineColor, torusColor);
     let shere = RecursiveSphere.createBasic(sphereRadius, sphereResolution, sphereLineColor, sphereColor);
     shere.localPosition = spherePosition;
-    colorRandom(cube);
+    colorRandom(shere);
     //colorRandom(torus);
     glObjects.push(cube);
     glObjects.push(torus);

@@ -47,6 +47,8 @@ class RecursiveSphere extends GLObject
         sphere.vertices = result.vertices;
         sphere.faces = result.faces;
         sphere.wireframe = result.wireframe;
+        sphere.wireframeColors = sphere.wireframeColors.slice(0, sphere.vertices.length);
+        sphere.faceColors = sphere.faceColors.slice(0, sphere.vertices.length);
 
 
         function subdivide(glObject, currentRecursion)
@@ -75,8 +77,22 @@ class RecursiveSphere extends GLObject
 
                 let vertex = new Vertex(new Vector3(pos.x, pos.y, pos.z), v.length);
                 v.push(vertex);
-                idToVertex["" + v1.index + v2.index] = vertex;
-                idToVertex["" + v2.index + v1.index] = vertex;
+                idToVertex["" + v1.index + "|"  + v2.index] = vertex;
+                idToVertex["" + v2.index + "|"  + v1.index] = vertex;
+
+                // Adding missing color values
+                if(sphere.wireframeColors.length && sphere.faceColors.length < v.length)
+                {
+                    let wc1 = sphere.wireframeColors[v1.index];
+                    let wc2 = sphere.wireframeColors[v2.index];
+                    let wc = wc1.lerp(wc2, 0.5);
+                    sphere.wireframeColors.push(wc);
+
+                    let fc1 = sphere.faceColors[v1.index];
+                    let fc2 = sphere.faceColors[v2.index];
+                    let fc = fc1.lerp(fc2, 0.5);
+                    sphere.faceColors.push(fc);
+                }
             });
 
             // Repositions vertices
@@ -92,11 +108,11 @@ class RecursiveSphere extends GLObject
             // Creates lines and faces
             glObject.faces.forEach(face => {
                 let v1 = face.vertices[0];
-                let v2 = face.vertices[1];
-                let v3 = face.vertices[2];
-                let v12 = idToVertex["" + v1.index + v2.index];
-                let v23 = idToVertex["" + v2.index + v3.index];
-                let v31 = idToVertex["" + v3.index + v1.index];
+                let v2 = face.vertices[2];
+                let v3 = face.vertices[1];
+                let v12 = idToVertex["" + v1.index + "|" + v2.index];
+                let v23 = idToVertex["" + v2.index + "|"  + v3.index];
+                let v31 = idToVertex["" + v3.index + "|"  + v1.index];
                 triangulation.combine(Triangulation.triangulateThree([v1,v12,v31]));
                 triangulation.combine(Triangulation.triangulateThree([v12,v2,v23]));
                 triangulation.combine(Triangulation.triangulateThree([v31,v23,v3]));
@@ -110,8 +126,8 @@ class RecursiveSphere extends GLObject
                 glObject.localRotation, 
                 glObject.localScale,
                 v,
-                triangulation.faces, 
-                triangulation.lines);
+                [...triangulation.faces], 
+                [...triangulation.lines]);
             result.removeDoubleLines();
             return subdivide(result, currentRecursion + 1);
         }
